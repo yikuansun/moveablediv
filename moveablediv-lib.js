@@ -1,15 +1,16 @@
 // moveablediv
 // by me
 class moveablediv extends HTMLElement {
-    constructor(w, h, x, y, unit_type) {
+    constructor(w, h, x, y, angle, unit_type) {
         super();
         this.width = w;
         this.height = h;
         this.x = x;
         this.y = y;
+        this.angle = angle;
         this.unit_type = unit_type;
     }
-    static get observedAttributes() { return ["width", "height", "x", "y"]; }
+    static get observedAttributes() { return ["width", "height", "x", "y", "angle"]; }
     attributeChangedCallback(name, oldValue, newValue) {
         switch(name) {
             case "width":
@@ -24,6 +25,9 @@ class moveablediv extends HTMLElement {
             case "y":
                 this.style.top = (newValue - this.height / 2).toString() + this.unit_type;
                 break;
+            case "angle":
+                this.style.transform = "rotate(" + newValue.toString() + "rad)";
+                break;
         }
     }
     connectedCallback() {
@@ -31,6 +35,7 @@ class moveablediv extends HTMLElement {
         this.style.height = this.height.toString() + this.unit_type;
         this.style.top = (this.y - this.height / 2).toString() + this.unit_type;
         this.style.left = (this.x - this.width / 2).toString() + this.unit_type;
+        this.style.transform = "rotate(" + this.angle.toString() + ")";
         this.style.position = "absolute";
     }
     get x() {
@@ -45,6 +50,9 @@ class moveablediv extends HTMLElement {
     get height() {
         return parseFloat(this.getAttribute("height"));
     }
+    get angle() {
+        return parseFloat(this.getAttribute("angle"));
+    }
     set x(newval) {
         this.setAttribute("x", newval);
     }
@@ -57,12 +65,15 @@ class moveablediv extends HTMLElement {
     set height(newval) {
         this.setAttribute("height", newval);
     }
+    set angle(newval) {
+        this.setAttribute("angle", newval);
+    }
 };
 customElements.define( "div-moving", moveablediv );
 
 /*
 // this stuff was made for testing
-mydiv = new moveablediv(50, 50, 20, 20, "px");
+mydiv = new moveablediv(50, 50, 20, 20, 0, "px");
 mydiv.style.backgroundColor = "red";
 document.getElementById("container").appendChild(mydiv);
 */
